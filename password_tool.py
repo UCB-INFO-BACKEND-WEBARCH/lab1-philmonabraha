@@ -50,8 +50,35 @@ def check_password_strength(password):
     
     Hint: Use .isdigit(), .isupper(), .islower() and string.punctuation
     """
-    # TODO: Implement this function
-    pass
+    score, feedback = 0, []
+    common = {"password", "123456", "qwerty", "abc123"}
+
+    if len(password) >= 12:
+        score += 30
+    elif len(password) >= 8:
+        score += 20
+    else:
+        feedback.append("Use at least 8 characters.")
+
+    if any(c.isdigit() for c in password): score += 20
+    else: feedback.append("Add a number.")
+
+    if any(c.isupper() for c in password): score += 20
+    else: feedback.append("Add uppercase.")
+
+    if any(c.islower() for c in password): score += 20
+    else: feedback.append("Add lowercase.")
+
+    if any(c in string.punctuation for c in password): score += 20
+    else: feedback.append("Add special character.")
+
+    if password.lower() not in common: score += 10
+    else: feedback.append("Avoid common passwords.")
+
+    strength = "Weak" if score <= 39 else "Medium" if score <= 69 else "Strong"
+
+    return {"password": password, "score": min(score, 100), "strength": strength, "feedback": feedback}
+
 
 
 # ============================================
@@ -82,8 +109,23 @@ def generate_password(length=12, use_special=True):
     Hint: Use string.ascii_uppercase, string.ascii_lowercase, 
           string.digits, and random.choice()
     """
-    # TODO: Implement this function
-    pass
+        
+    if length < 8:
+        length = 8
+
+    chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
+    if use_special:
+        chars += string.punctuation
+
+    password = [random.choice(string.ascii_uppercase), random.choice(string.ascii_lowercase), random.choice(string.digits)]
+
+    if use_special:
+        password.append(random.choice(string.punctuation))
+
+    password += [random.choice(chars) for _ in range(length - len(password))]
+    random.shuffle(password)
+
+    return "".join(password)
 
 
 # ============================================
